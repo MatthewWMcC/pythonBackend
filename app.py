@@ -1,7 +1,10 @@
 from flask import Flask,jsonify,request
+from flask_cors import CORS, cross_origin
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # create an instance of the Flask class
 app = Flask(__name__)
@@ -130,10 +133,12 @@ class Simulation:
         return res
 
 @app.route('/')
+@cross_origin()
 def beans():
     return "matt was here"
 
 @app.route('/simulate/example')
+@cross_origin()
 def example_fetch():
     example = Simulation(1000) # Erryting default
     example.simulate(365) # Un ans
@@ -142,6 +147,7 @@ def example_fetch():
 
 # Eg. localhost:5000/simulate?pop=1000&i0=4&b=1.1&d_r=0.1&vax_offset=10&days=30
 @app.route('/simulate')
+@cross_origin()
 def simulation_nation():
     pop = request.args.get('pop',type = int)# Cannot have default population, doesn't make sense
     i0 = request.args.get('i0',default=1,type = int)
